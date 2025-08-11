@@ -1,50 +1,33 @@
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.shortcuts import render, get_object_or_404
 from django.views import View
-import json
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from .models import Receta, Categoria
 
-from django.shortcuts import render 
-from .models import Cliente
-
-# Create your views here.
-class ClienteView (View):
-    @method_decorator(csrf_exempt, name="dispatch")
+# Vista para lista de recetas (todas, con búsqueda y filtro)
+class ListaRecetasView(View):
     def get(self, request):
-        Clientes = Cliente.objects.all().values()
-        return JsonResponse(list(Clientes), safe=False)
-    
-    def post(self, request):
-        try:
-            data = json.load(request.body)
-            cliente = cliente.objects.create(
-                id = data["id"],
-                nombre = data["nombre"],
-                fecha_nacimiento = data["fecha de nacimiento"],
-            )
-            return JsonResponse({"mensaje": "Cliente creado", "id":cliente.nombre})
-        except:
-            return HttpResponseBadRequest({"error": "Formato invalido"})
+        recetas = Receta.objects.all()  # Obtiene todas las recetas
+        
+        # Búsqueda por nombre (barra de búsqueda)
+        busqueda = request.GET.get('busqueda')
+        if busqueda:
+            recetas = recetas.filter(nombre__icontains=busqueda)  # Busca sin importar mayúsculas
+        
+        # Filtro por dificultad (ej: ?dificultad=facil)
+        dificultad = request.GET.get('dificultad')
+        if dificultad:
+            recetas = recetas.filter(dificultad=dificultad)
+        
+        # Pasamos datos al template
+        context = {
+            'recetas': recetas,
+            'dificultades': Receta.DIFICULTAD_CHOICES,  # Para mostrar opciones de filtro
+        }
+        return render(request, 'mi_app/lista_recetas.html', context)
 
-
-    """def get (self, request):
-        data = {"respuesta": "Hola mundo"
-                }
-        return JsonResponse(data)
-def post(self, request):
-    try:
-        body = json.loads(request.body)
-    except: 
-        return HttpResponseBadRequest("formato invalido")
-    
-    data = {
-        "status": "ok"
-    }
-    
-    return JsonResponse(data) 
-    """      
-
-class PaginitaView(View):
-    def get (self, request):
-        return render(request, "mi app/index.html")
+# Vista para detalle de una receta individual
+class DetalleRecetaView(View):
+    def get(self, request, id):
+        receta = get_object_or_404(Receta, id=id)  # Obtiene la receta o error 404 si no existe
+        context = {'receta': receta}
+        return render(request, 'mi_app/detalle_receta.html', context)
     
