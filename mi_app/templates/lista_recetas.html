@@ -2,36 +2,36 @@
 <html lang="es">
 <head>
     <title>Catálogo de Recetas</title>
+    <link rel="stylesheet" href="{% static 'lista_recetas.css' %}">  <!-- Enlace a CSS separado -->
+    <script src="{% static 'lista_recetas.js' %}" defer></script>  <!-- Enlace a JS separado -->
 </head>
 <body>
-    <h1>Lista de Recetas</h1>
-    
-    <!-- Barra de búsqueda -->
-    <form method="get">
-        <input type="text" name="busqueda" placeholder="Buscar por nombre" value="{{ request.GET.busqueda }}">
-        <button type="submit">Buscar</button>
-    </form>
-    
-    <!-- Filtro por dificultad -->
-    <form method="get">
-        <select name="dificultad">
-            <option value="">Todas</option>
-            {% for dif in dificultades %}
-                <option value="{{ dif.0 }}" {% if request.GET.dificultad == dif.0 %}selected{% endif %}>{{ dif.1 }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Filtrar</button>
-    </form>
-    
-    <!-- Lista de recetas -->
-    <ul>
-        {% for receta in recetas %}
-            <li>
-                <a href="/recetas/{{ receta.id }}/">{{ receta.nombre }}</a> - Dificultad: {{ receta.get_dificultad_display }} - Tiempo: {{ receta.tiempo_preparacion }} min
-            </li>
-        {% empty %}
-            <li>No hay recetas.</li>
-        {% endfor %}
-    </ul>
+    <header>
+        <h1>Lista de Recetas</h1>
+    </header>
+    <section class="search-section">
+        <!-- Barra de búsqueda (manejada por JS) -->
+        <form id="search-form">
+            <input type="text" id="busqueda" placeholder="Buscar por nombre">
+            <button type="submit">Buscar</button>
+        </form>
+        <!-- Filtro por dificultad (manejada por JS) -->
+        <form id="filter-form">
+            <select id="dificultad">
+                <option value="">Todas</option>
+                {% for dif in dificultades %}
+                    <option value="{{ dif.0 }}">{{ dif.1 }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+        </form>
+    </section>
+    <section class="recetas-list" id="recetas-list">
+        <!-- Lista se llenará con JS/fetch -->
+        <ul></ul>  <!-- Vacío inicialmente, JS lo llena -->
+    </section>
+    <footer>
+        <p>Hecho por un estudiante principiante - 2025</p>
+    </footer>
 </body>
 </html>
