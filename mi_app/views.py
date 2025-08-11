@@ -22,12 +22,12 @@ class ListaRecetasView(View):
             'recetas': recetas,
             'dificultades': Receta.DIFICULTAD_CHOICES,  # Para mostrar opciones de filtro
         }
-        return render(request, 'mi_app/lista_recetas.html', context)
+        return render(request, 'lista_recetas.html', context)  # Cambiado: sin 'mi_app/'
 
 # Vista para detalle de una receta individual
 class DetalleRecetaView(View):
     def get(self, request, id):
         receta = get_object_or_404(Receta, id=id)  # Obtiene la receta o error 404 si no existe
         context = {'receta': receta}
-        return render(request, 'mi_app/detalle_receta.html', context)
+        return render(request, 'detalle_receta.html', context)  # Cambiado: sin 'mi_app/'
     
