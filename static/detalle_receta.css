@@ -1,0 +1,6 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+header { text-align: center; background-color: #f0f0f0; padding: 10px; }
+.detalle-section { max-width: 600px; margin: 0 auto; }
+p { margin-bottom: 10px; }
+footer { text-align: center; margin-top: 20px; }
+footer a { color: #4CAF50; text-decoration: none; }
